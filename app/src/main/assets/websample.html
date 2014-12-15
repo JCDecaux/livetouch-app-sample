@@ -1,0 +1,62 @@
+<html>
+<head>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+</head>
+<body>
+<h4>Properties</h4>
+<p>Device name : <span id="id"></span></p>
+<p>Device orientation : <span id="orientation"></span></p>
+<p>Device screen size : width=<span id="width"></span> height=<span id="height"></span></p>
+<p>Has virtual buttons : <span id="virtualButtons"></span></p>
+<p>Running environment : <span id="env"></span></p>
+<p>Default locale : <span id="locale"></span></p>
+
+<h4>Geolocation</h4>
+<div id="geolocation"></div>
+</body>
+<script type="text/javascript">
+
+    console.info("User agent is " + navigator.userAgent);
+
+if( typeof jcdroid === "undefined" ) {
+    console.error('Error : javascript interface "jcdroid" not supported.');
+} else {
+    window.document.getElementById('locale').innerHTML = jcdroid.getLocale();
+    window.document.getElementById('id').innerHTML = jcdroid.getDeviceName();
+    window.document.getElementById('orientation').innerHTML = (jcdroid.getOrientation() == 1 ? "PORTAIT" : "LANDSCAPE");
+    window.document.getElementById('env').innerHTML = jcdroid.getAppEnvironment();
+    window.document.getElementById('virtualButtons').innerHTML = (jcdroid.isNavigationBarEnabled() ? "true" : "false");
+}
+
+var width = "";
+if(window.innerWidth != null)
+width = window.innerWidth;
+if(window.screen != null)
+width += "("+window.screen.availWidth+")";
+window.document.getElementById('width').innerHTML = width; 
+
+var height = "";
+if(window.innerHeight != null)
+height = window.innerHeight;
+if(window.screen != null)
+height += "("+window.screen.availHeight+")";
+window.document.getElementById('height').innerHTML = height; 
+
+var success = function success(position) {
+  var s = document.getElementById('geolocation');
+  s.innerHTML = "I found you ! : " + position.coords.latitude + " " + position.coords.longitude;
+}
+    
+var error = function error(error) {
+  console.error("Failed to retrieve geolocation : " + error.code);
+}
+
+
+if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(success, error, {enableHighAccuracy :true});
+} else {
+    console.error('Error : javascript interface "geolocation" not supported.');
+}
+
+</script>
+</html>
